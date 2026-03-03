@@ -1,7 +1,6 @@
 services:
-  # Основной веб-сервис для вашего приложения
   - type: web
-    name: Fort Inform Site
+    name: Fort-Inform
     env: docker
     plan: free
     healthCheckPath: /
@@ -9,31 +8,16 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: APP_URL
-        sync: false # Не синхронизировать с GitHub, чтобы не перезаписать значение
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
-          name: Fort-Inform-Site-DB
-          property: connectionString
-      - key: DB_CONNECTION
-        value: pgsql
-
-  # Сервис для выполнения миграций при каждом развертывании
-  - type: job
-    name: Migrations
-    plan: free
-    startCommand: php artisan migrate --force
-    envVars:
-      - key: APP_KEY
-        generateValue: true # Нужно, чтобы artisan работал
-      - key: DATABASE_URL
-        fromDatabase:
-          name: Fort-Inform-Site-DB
+          name: Fort-Inform-DB
           property: connectionString
       - key: DB_CONNECTION
         value: pgsql
 
 databases:
-  - name: Fort-Inform-Site-DB
-    databaseName: fort_inform_site_db
+  - name: Fort-Inform-DB
+    databaseName: fort_inform_db
     user: fort_inform_user
     plan: free

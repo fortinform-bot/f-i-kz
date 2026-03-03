@@ -2,9 +2,6 @@
 FROM php:8.2-cli
 
 # Устанавливаем системные зависимости
-# - libpq-dev: для драйвера PostgreSQL (pdo_pgsql)
-# - nodejs & npm: для сборки фронтенда
-# - zip, unzip, git: для Composer
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     nodejs \
@@ -34,8 +31,9 @@ RUN npm run build
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 RUN chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Открываем порт, на котором будет работать приложение
+# Открываем порт и копируем скрипт запуска
 EXPOSE 10000
+COPY run.sh /usr/local/bin/run.sh
 
-# Команда для запуска веб-сервера (используется веб-сервисом)
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "10000"]
+# Команда для запуска (скрипт + веб-сервер)
+CMD ["run.sh"]
