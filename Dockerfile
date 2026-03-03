@@ -1,16 +1,21 @@
 # Используем официальный образ PHP 8.2
 FROM php:8.2-cli
 
-# Устанавливаем системные зависимости
+# Устанавливаем ключевые системные зависимости и добавляем репозиторий Node.js 20
 RUN apt-get update && apt-get install -y \
     libpq-dev \
-    nodejs \
-    npm \
     zip \
     unzip \
-    git
+    git \
+    curl \
+    gnupg \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs
 
-# Устанавливаем необходимые PHP-расширения
+# Устанавливаем PHP-расширения
 RUN docker-php-ext-install pdo pdo_pgsql bcmath
 
 # Устанавливаем Composer
@@ -22,18 +27,18 @@ WORKDIR /app
 # Копируем все файлы приложения
 COPY . .
 
-# Устанавливаем зависимости PHP и JS
+# Устанавливаем зависимости и собираем проект
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 RUN npm install
 RUN npm run build
 
-# Настраиваем права доступа для Laravel
+# Настраиваем права доступа
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 RUN chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Открываем порт и копируем скрипт запуска
+# Копируем и открываем порт для скрипта запуска
 EXPOSE 10000
 COPY run.sh /usr/local/bin/run.sh
 
-# Команда для запуска (скрипт + веб-сервер)
+# Команда для запуска
 CMD ["run.sh"]
