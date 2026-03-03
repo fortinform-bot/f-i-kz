@@ -2,6 +2,40 @@
 
 use Illuminate\Support\Str;
 
+$pgsqlConfig = [];
+if (env('DATABASE_URL')) {
+    $url = parse_url(env('DATABASE_URL'));
+    $pgsqlConfig = [
+        'driver' => 'pgsql',
+        'host' => $url['host'],
+        'port' => $url['port'],
+        'database' => substr($url['path'], 1),
+        'username' => $url['user'],
+        'password' => $url['pass'],
+        'charset' => 'utf8',
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'search_path' => 'public',
+        'sslmode' => 'require', // Render requires SSL
+    ];
+} else {
+    // Keep original config for local development
+    $pgsqlConfig = [
+        'driver' => 'pgsql',
+        'url' => env('DB_URL'),
+        'host' => env('DB_HOST', '127.0.0.1'),
+        'port' => env('DB_PORT', '5432'),
+        'database' => env('DB_DATABASE', 'laravel'),
+        'username' => env('DB_USERNAME', 'root'),
+        'password' => env('DB_PASSWORD', ''),
+        'charset' => env('DB_CHARSET', 'utf8'),
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'search_path' => 'public',
+        'sslmode' => env('DB_SSLMODE', 'prefer'),
+    ];
+}
+
 return [
 
     /*
@@ -83,20 +117,7 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => env('DB_SSLMODE', 'prefer'),
-        ],
+        'pgsql' => $pgsqlConfig,
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
