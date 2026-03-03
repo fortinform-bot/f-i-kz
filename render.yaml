@@ -1,18 +1,30 @@
 services:
+  # Основной веб-сервис для вашего приложения
   - type: web
     name: Fort Inform Site
     env: docker
-    dockerfilePath: ./Dockerfile
     plan: free
     healthCheckPath: /
     envVars:
-      # Generate the Laravel APP_KEY on first deploy
       - key: APP_KEY
         generateValue: true
-      # The public-facing URL of your app
       - key: APP_URL
-        value: https://fort-inform-site.onrender.com
-      # The database connection details
+        sync: false # Не синхронизировать с GitHub, чтобы не перезаписать значение
+      - key: DATABASE_URL
+        fromDatabase:
+          name: Fort-Inform-Site-DB
+          property: connectionString
+      - key: DB_CONNECTION
+        value: pgsql
+
+  # Сервис для выполнения миграций при каждом развертывании
+  - type: job
+    name: Migrations
+    plan: free
+    startCommand: php artisan migrate --force
+    envVars:
+      - key: APP_KEY
+        generateValue: true # Нужно, чтобы artisan работал
       - key: DATABASE_URL
         fromDatabase:
           name: Fort-Inform-Site-DB
@@ -21,7 +33,6 @@ services:
         value: pgsql
 
 databases:
-  # The PostgreSQL database
   - name: Fort-Inform-Site-DB
     databaseName: fort_inform_site_db
     user: fort_inform_user
