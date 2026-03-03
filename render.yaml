@@ -1,23 +1,45 @@
 services:
+  # A Docker web service
   - type: web
-    name: Fort-Inform
-    env: docker
-    plan: free
-    healthCheckPath: /
+    name: fort-inform
+    env: php
+    buildCommand: "bash ./render-build.sh"
+    startCommand: "php artisan serve --host 0.0.0.0 --port $PORT"
     envVars:
       - key: APP_KEY
         generateValue: true
-      - key: APP_URL
-        sync: false
-      - key: DATABASE_URL
-        fromDatabase:
-          name: Fort-Inform-DB
-          property: connectionString
+      - key: APP_ENV
+        value: production
       - key: DB_CONNECTION
         value: pgsql
+      - key: DB_HOST
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: port
+      - key: DB_DATABASE
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: database
+      - key: DB_USERNAME
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: password
 
 databases:
-  - name: Fort-Inform-DB
-    databaseName: fort_inform_db
-    user: fort_inform_user
+  - name: fort-inform-db
+    databaseName: fort_inform_db_z5pa
+    user: fort_inform_admin
     plan: free

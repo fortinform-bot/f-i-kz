@@ -1,52 +1,52 @@
+# Blueprint: F-I-KZ Project
 
-# Fort-Inform-Site Blueprint
+## 1. Overview
 
-## 1. Обзор проекта
+This project, `f-i-kz`, is a full-stack web application built on the Laravel framework. It appears to be a system for managing contacts and consultations, leveraging Laravel's robust backend capabilities for data handling and its Blade templating engine for the frontend. The application is configured to use an SQLite database for local development.
 
-Это веб-приложение, созданное на фреймворке Laravel. Оно представляет собой корпоративный сайт с возможностью обратной связи и, возможно, блогом.
+## 2. Implemented Features & Design
 
-## 2. Стиль и дизайн
+### Backend
 
-- **Шрифты:** Современные, читабельные шрифты. Акцент на заголовках для улучшения иерархии.
-- **Цветовая палитра:** Будет определена в процессе.
-- **Иконки и изображения:** Используются для навигации и визуального обогащения.
-- **Эффекты:** Мягкие тени и плавные переходы для создания ощущения глубины и интерактивности.
+*   **Framework:** Laravel 12.53.0
+*   **Language:** PHP 8.2.27
+*   **Database:** SQLite
+*   **Core Dependencies:** `guzzlehttp`, `laravel/sail`, `laravel/tinker`
+*   **Database Schema:**
+    *   `users`: Standard Laravel user authentication table.
+    *   `cache`: For storing cached data.
+    *   `jobs`: For managing queued jobs.
+    *   `consultations`: To store consultation request data.
+    *   `contacts`: To store contact form submissions or contact details.
+    *   `sessions`: For managing user sessions.
 
-## 3. Реализованные функции
+### Frontend
 
-- Главная страница (`welcome.blade.php`)
-- Форма для консультаций с отправкой уведомлений (`consultation.blade.php`)
-- Страница для постов/статей (`post.blade.php`)
-- Настроенные маршруты для всех страниц.
-- Модели Eloquent для работы с данными (`Consultation`, `Contact`, `User`).
-- Настроена отправка почты для уведомлений.
+*   **Compiler:** Vite
+*   **Templating:** Blade
+*   **Core Dependencies:** `laravel-vite-plugin`, `vite`, `axios`
+*   **Styling:** The project is set up with a basic structure, likely using the default styles that come with a new Laravel project, which can be extended (e.g., with Tailwind CSS).
 
-## 4. План развертывания на Render
+### Design
 
-**Цель:** Разместить Laravel-приложение на платформе Render с использованием базы данных PostgreSQL.
+*   **Current View:** The application currently displays the default Laravel welcome page (`welcome.blade.php`).
+*   **Layout:** A simple, centered content layout.
+*   **Typography:** Default system fonts.
+*   **Color Scheme:** Grayscale with Laravel's signature red accents.
 
-**Шаги:**
+## 3. Current Plan: Project Restoration (Completed)
 
-1.  **Создать аккаунт на Render.**
-2.  **Создать сервис "Web Service":**
-    *   Подключить GitHub-репозиторий `fortinform-bot/f-i-kz`.
-    *   Указать `main` как основную ветку.
-    *   **Среда (Environment):** `PHP`.
-    *   **Команда сборки (Build Command):** `composer install`.
-    *   **Команда запуска (Start Command):** `php artisan serve --host 0.0.0.0 --port $PORT`.
-3.  **Создать сервис "Database":**
-    *   Выбрать **PostgreSQL**.
-    *   Выбрать бесплатный тариф (Free).
-4.  **Настроить переменные окружения (`.env`):**
-    *   В настройках "Web Service" перейти в раздел "Environment".
-    *   Скопировать `DATABASE_URL` от созданной базы данных PostgreSQL.
-    *   Добавить эту и другие необходимые переменные (`APP_KEY`, `APP_URL` и т.д.) в сервис. Render предложит удобный способ сделать это.
-5.  **Запустить развертывание (Deploy).** Render автоматически начнет сборку и запуск проекта.
+The following steps were just completed to restore the project from a GitHub repository and ensure it is in a runnable state.
 
-## 5. Текущая задача: Переход на PostgreSQL
-
-**Статус:** ✅ **Выполнено**
-
-- В `config/database.php` соединение по умолчанию изменено на `pgsql`.
-- Установлен пакет `doctrine/dbal` для обеспечения совместимости.
-- Проект готов к работе с PostgreSQL на Render.
+1.  **Clean Workspace:** Completely cleared the project directory to prevent conflicts.
+2.  **Clone Repository:** Cloned the project from `https://github.com/fortinform-bot/f-i-kz.git`.
+3.  **Install Dependencies:**
+    *   Ran `composer install` to install all PHP packages.
+    *   Ran `npm install` to install all Node.js/frontend packages.
+4.  **Configure Environment:**
+    *   Copied `.env.example` to `.env`.
+    *   Generated a unique application key with `php artisan key:generate`.
+5.  **Set Up Database:**
+    *   Created the SQLite database file at `database/database.sqlite`.
+    *   Ran `php artisan migrate` to create all necessary tables in the database.
+6.  **Launch Application:** Executed `npm run dev` to start the Vite development server and serve the application.
