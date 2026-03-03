@@ -8,7 +8,7 @@ if (env('DATABASE_URL')) {
     $pgsqlConfig = [
         'driver' => 'pgsql',
         'host' => $url['host'],
-        'port' => $url['port'],
+        'port' => $url['port'] ?? '5432',
         'database' => substr($url['path'], 1),
         'username' => $url['user'],
         'password' => $url['pass'],
