@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: fort-inform
+    env: php
+    publicDirectory: public
+    buildCommand: "bash ./render-build.sh"
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_ENV
+        value: production
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: port
+      - key: DB_DATABASE
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: database
+      - key: DB_USERNAME
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: psql
+          name: fort-inform-db
+          property: password
+
+databases:
+  - name: fort-inform-db
+    databaseName: fort_inform_db_z5pa
+    user: fort_inform_admin
+    plan: free
