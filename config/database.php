@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Str;
 
+// Parse the database URL from the environment, if it exists.
+$databaseUrl = env('DATABASE_URL');
+$dbConfig = $databaseUrl ? parse_url($databaseUrl) : null;
+
 return [
 
     /*
@@ -26,10 +30,6 @@ return [
     | Of course, examples of configuring each database platform that is
     | supported by Laravel is provided below to make development simple.
     |
-    | All database work in Laravel is done through the PHP PDO facilities
-    | so make sure you have the driver for your particular database of
-    | choice installed on your machine before you begin development.
-    |
     */
 
     'connections' => [
@@ -44,12 +44,11 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', 5432),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'laravel'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => $dbConfig['host'] ?? env('DB_HOST', '127.0.0.1'),
+            'port' => $dbConfig['port'] ?? env('DB_PORT', 5432),
+            'database' => $dbConfig ? ltrim($dbConfig['path'], '/') : env('DB_DATABASE', 'laravel'),
+            'username' => $dbConfig['user'] ?? env('DB_USERNAME', 'laravel'),
+            'password' => $dbConfig['pass'] ?? env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -71,10 +70,6 @@ return [
     |--------------------------------------------------------------------------
     | Redis Databases
     |--------------------------------------------------------------------------
-    |
-    | Redis is an open source, fast, local key-value store that is used as
-    | a cache server and can also be used as a query cache.
-    |
     */
 
     'redis' => [
