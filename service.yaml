@@ -1,4 +1,0 @@
-run: 
-  web:
-    command: "vendor/bin/heroku-php-apache2 public/"
-    runtime: "php82"
