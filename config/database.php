@@ -2,53 +2,17 @@
 
 use Illuminate\Support\Str;
 
-$pgsqlConfig = [];
-// This block is designed to safely parse the DATABASE_URL from Render.
-if (env('DATABASE_URL')) {
-    $url = parse_url(env('DATABASE_URL'));
-
-    // Ensure all required URL parts are present before building the config
-    if (isset($url['host'], $url['user'], $url['pass'], $url['path'])) {
-        $pgsqlConfig = [
-            'driver' => 'pgsql',
-            'host' => $url['host'],
-            'port' => $url['port'] ?? '5432', // Use default port if not set
-            'database' => substr($url['path'], 1),
-            'username' => $url['user'],
-            'password' => $url['pass'],
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => 'require', // Render requires SSL
-        ];
-    }
-}
-
-// Fallback for local development if DATABASE_URL is not set
-if (empty($pgsqlConfig)) {
-    $pgsqlConfig = [
-        'driver' => 'pgsql',
-        'url' => env('DB_URL'),
-        'host' => env('DB_HOST', '127.0.0.1'),
-        'port' => env('DB_PORT', '5432'),
-        'database' => env('DB_DATABASE', 'laravel'),
-        'username' => env('DB_USERNAME', 'root'),
-        'password' => env('DB_PASSWORD', ''),
-        'charset' => env('DB_CHARSET', 'utf8'),
-        'prefix' => '',
-        'prefix_indexes' => true,
-        'search_path' => 'public',
-        'sslmode' => env('DB_SSLMODE', 'prefer'),
-    ];
-}
-
 return [
 
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
     |--------------------------------------------------------------------------
+    |
+    | Here you may specify which of the database connections below you wish
+    | to use as your default connection for all database work. Of course
+    | you may use many connections at once using the Database library.
+    |
     */
 
     'default' => env('DB_CONNECTION', 'pgsql'),
@@ -57,13 +21,23 @@ return [
     |--------------------------------------------------------------------------
     | Database Connections
     |--------------------------------------------------------------------------
+    |
+    | Here are each of the database connections setup for your application.
+    | Of course, examples of configuring each database platform that is
+    | supported by Laravel is provided below to make development simple.
+    |
+    |
+    | All database work in Laravel is done through the PHP PDO facilities
+    | so make sure you have the driver for your particular database of
+    | choice installed on your machine before you begin development.
+    |
     */
 
     'connections' => [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DB_URL'),
+            'url' => env('DATABASE_URL'),
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
@@ -71,7 +45,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL'),
+            'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -89,11 +63,24 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => $pgsqlConfig,
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'require', // Render requires SSL. `prefer` is default.
+        ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => env('DB_URL'),
+            'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -110,6 +97,11 @@ return [
     |--------------------------------------------------------------------------
     | Migration Repository Table
     |--------------------------------------------------------------------------
+    |
+    | This table keeps track of all the migrations that have already run for
+    | your application. Using this information, we can determine which of
+    | the migrations on disk haven't actually been run in the database.
+    |
     */
 
     'migrations' => 'migrations',
@@ -118,6 +110,12 @@ return [
     |--------------------------------------------------------------------------
     | Redis Databases
     |--------------------------------------------------------------------------
+    |
+    | Redis is an open source, fast, our-memory data structure store that can
+    | be used as a database, cache, message broker, and queue. It supports
+    | a variety of data structures such as strings, hashes, lists, sets,
+    | sorted sets, bitmaps, hyperloglogs, and geospatial indexes.
+    |
     */
 
     'redis' => [
@@ -132,7 +130,7 @@ return [
         'default' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
+            'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
         ],
@@ -140,7 +138,7 @@ return [
         'cache' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
+            'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
