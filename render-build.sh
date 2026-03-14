@@ -2,16 +2,19 @@
 # Exit on error
 set -o errexit
 
-# Install frontend dependencies
-echo "Installing NPM dependencies..."
+# Install Composer Dependencies
+composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Install NPM Dependencies
 npm install
 
-# Build frontend assets for production
-echo "Building frontend assets..."
+# Build Assets
 npm run build
 
-# Run database migrations
-echo "Running database migrations..."
-php artisan migrate --force
+# Clear and Cache Configuration
+# These commands are run during the build process to optimize the application.
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
-echo "Build complete!"
+echo "Build script finished successfully!"

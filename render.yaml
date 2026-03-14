@@ -3,7 +3,7 @@ services:
     name: fort-inform-site
     env: php
     buildCommand: "./render-build.sh"
-    startCommand: "php artisan serve --host 0.0.0.0 --port $PORT"
+    startCommand: "php artisan migrate --force && php artisan serve --host 0.0.0.0 --port $PORT"
     envVars:
       - key: APP_KEY
         generateValue: true
