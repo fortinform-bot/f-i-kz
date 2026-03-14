@@ -1,16 +1,12 @@
 <?php
 
-use Illuminate\Support\Str;
-
-// Parse the database URL from the environment, if it exists.
-$databaseUrl = env('DATABASE_URL');
-$dbConfig = $databaseUrl ? parse_url($databaseUrl) : null;
+$dbConfig = parse_url(env('DATABASE_URL'));
 
 return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Database Connection Name
+    | Default Database Connection
     |--------------------------------------------------------------------------
     |
     | Here you may specify which of the database connections below you wish
@@ -25,11 +21,6 @@ return [
     |--------------------------------------------------------------------------
     | Database Connections
     |--------------------------------------------------------------------------
-    |
-    | Here are each of the database connections setup for your application.
-    | Of course, examples of configuring each database platform that is
-    | supported by Laravel is provided below to make development simple.
-    |
     */
 
     'connections' => [
@@ -44,11 +35,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => $dbConfig['host'] ?? env('DB_HOST', '127.0.0.1'),
-            'port' => $dbConfig['port'] ?? env('DB_PORT', 5432),
-            'database' => $dbConfig ? ltrim($dbConfig['path'], '/') : env('DB_DATABASE', 'laravel'),
-            'username' => $dbConfig['user'] ?? env('DB_USERNAME', 'laravel'),
-            'password' => $dbConfig['pass'] ?? env('DB_PASSWORD', ''),
+            'url' => env('DATABASE_URL'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -78,23 +65,23 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => Str::slug(env('APP_NAME', 'laravel'), '_').'_database_',
+            'prefix' => env('REDIS_PREFIX', Illuminate\Support\Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
         'default' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_DB', 0),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_DB', '0'),
         ],
 
         'cache' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_CACHE_DB', 1),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_CACHE_DB', '1'),
         ],
 
     ],
