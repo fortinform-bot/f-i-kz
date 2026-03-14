@@ -11,10 +11,4 @@ npm install
 # Build Assets
 npm run build
 
-# Clear and Cache Configuration
-# These commands are run during the build process to optimize the application.
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
 echo "Build script finished successfully!"
